@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Capital Crew — Member Platform</title>
+<meta name="description" content="Capital Crew member, contribution and administration platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="auth-shell" id="authShell">
+  <div class="auth-brand">
+    <img src="assets/capital-crew-logo.jpg" alt="Capital Crew">
+    <div><b>Capital Crew</b><small>Community Investing</small></div>
+  </div>
+  <div class="auth-card" id="loginCard">
+    <div class="eyebrow">MEMBER ACCESS</div><h1>Welcome back.</h1>
+    <p>Sign in to your Capital Crew member account.</p>
+    <form id="loginForm">
+      <label>Email<input required type="email" id="loginEmail" placeholder="you@email.com"></label>
+      <label>Password<input required type="password" id="loginPassword" placeholder="••••••••"></label>
+      <button class="primary full" type="submit">Sign in securely →</button>
+    </form>
+    <div class="auth-divider">or</div>
+    <button class="secondary-btn full" id="showRegister">Create a member account</button>
+    <small class="auth-note">Identity verification is required before deposits or contributions can be submitted.</small>
+  </div>
+  <div class="auth-card hidden" id="confirmCard">
+    <div class="eyebrow">LOGIN CONFIRMATION</div><h1>Confirm your sign-in.</h1>
+    <p>We generated a one-time confirmation code for <strong id="confirmEmail">your email</strong>.</p>
+    <form id="confirmForm">
+      <label>Confirmation code<input required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" id="confirmCode" placeholder="000000" autocomplete="one-time-code"></label>
+      <button class="primary full" type="submit">Confirm sign-in →</button>
+    </form>
+    <button class="text-btn auth-back" id="resendCode">Generate a new code</button>
+    <small class="auth-note" id="confirmHint">For the local package, the generated code is shown here so the login flow can be tested. Production should deliver it by email or SMS from the server.</small>
+    <div class="login-code-preview" id="loginCodePreview"></div>
+    <button class="text-btn auth-back" id="cancelConfirm">← Back to sign in</button>
+  </div>
+  <div class="auth-card hidden" id="registerCard">
+    <div class="eyebrow">NEW MEMBER</div><h1>Create your account.</h1>
+    <p>Set up your member profile to access plans and your dashboard. A confirmation code must be verified before your account is activated.</p>
+    <form id="registerForm">
+      <label>Full name<input required id="regName" placeholder="Your full name"></label>
+      <label>Email<input required type="email" id="regEmail" placeholder="you@email.com"></label>
+      <label>Password<input required minlength="8" type="password" id="regPassword" placeholder="At least 8 characters"></label>
+      <button class="primary full" type="submit">Create account →</button>
+    </form>
+    <button class="text-btn auth-back" id="showLogin">← Back to sign in</button>
+  </div>
+  <div class="auth-foot">🔒 Secure member access · ZAR platform · Capital Crew</div>
+</div>
+
+<div class="app" id="appShell">
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="#" data-view="overview"><img src="assets/capital-crew-logo.jpg"><span><b>Capital Crew</b><small>Community Investing</small></span></a>
+  <div class="side-label">MEMBER AREA</div>
+  <button class="side-link active" data-view="overview">⌂ <span>Overview</span></button>
+  <button class="side-link" data-view="invest">◈ <span>Invest / Contribute</span></button>
+  <button class="side-link" data-view="moneylist">▦ <span>Money List</span></button>
+  <button class="side-link" data-view="transactions">↕ <span>Transactions</span></button>
+  <button class="side-link" data-view="referrals">♧ <span>Referrals</span></button>
+  <button class="side-link" data-view="profile">◎ <span>Profile & KYC</span></button>
+  <div class="side-label">SUPPORT</div>
+  <button class="side-link" data-view="help">? <span>Help centre</span></button>
+  <button class="side-link" data-view="about">ⓘ <span>About & Contact</span></button>
+  <button class="side-link" data-view="terms">§ <span>Terms & Conditions</span></button>
+  <a class="side-link admin-entry" href="admin.html">⚙ <span>Staff / Admin workspace</span></a>
+  <div class="sidebar-bottom"><div class="secure-mini">🔒 <span><b>Secure workspace</b><small>Protected workspace</small></span></div><button id="logout" class="logout">Sign out</button></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <button class="hamb" id="hamb">☰</button>
+  <div class="crumb">Member portal / <b id="viewTitle">Overview</b></div>
+  <div class="top-actions"><span class="status">● All systems normal</span><button class="iconbtn" id="notif">♢</button><button class="avatar avatar-button" id="topAvatar" type="button" title="Edit profile" aria-label="Edit profile">KR</button></div>
+</header>
+
+<section class="view active" id="overview">
+  <div class="welcome"><div><div class="eyebrow">MEMBER DASHBOARD</div><h1>Good morning, <span>Member.</span></h1><p>Here’s your Capital Crew activity at a glance.</p></div><button class="primary" data-view="invest">+ Make a contribution</button></div>
+  <div class="hero-metrics">
+    <div class="metric main-metric"><span>Current contribution balance</span><strong id="balance">R0</strong><small>Available balance · withdrawals subject to the 10-day investment period</small><div class="spark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="metric"><span>Total contributed</span><strong id="contributed">R0</strong><small>Across all contributions</small></div>
+    <div class="metric"><span>Active plan</span><strong id="activePlan">Starter</strong><small id="activePlanMeta">No live investment</small></div>
+    <div class="metric"><span>Referral rewards</span><strong id="refReward">R0</strong><small>Recorded referral rewards</small></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-head"><h2>Recent activity</h2><button class="text-btn" data-view="transactions">View all →</button></div><div id="recentActivity" class="activity"></div></div>
+    <div class="panel"><div class="panel-head"><h2>Contribution progress</h2><span class="pill">Starter</span></div><div class="progress-box"><div class="ring"><b id="progressPct">0%</b><small>target</small></div><div><h3 id="progressTitle">Build your first balance</h3><p>Choose a plan and make your first contribution to start tracking progress.</p><button class="secondary-btn" data-view="invest">Explore plans</button></div></div></div>
+  </div>
+  <div class="notice"><b>Withdrawal timing:</b> A withdrawal becomes eligible after 10 full days of investment from the date your investment is confirmed. Once a withdrawal is approved, funds normally take <strong>1–3 working days</strong> to reflect, depending on the selected payment method and provider processing times. <b>Important:</b> These rules must match the final legally approved Capital Crew product terms before launch.</div>
+</section>
+
+<section class="view" id="invest">
+  <div class="verification-gate" id="depositGate">
+    <div><strong>Verification required before depositing</strong><p>Complete account verification before you can create a contribution/payment session.</p></div>
+    <button class="secondary-btn" type="button" data-view="profile">Verify my account →</button>
+  </div>
+  <div class="page-head"><div><div class="eyebrow">CONTRIBUTE</div><h1>Choose your plan.</h1><p>Clear pricing first. Payment second.</p></div><span class="zar">🇿🇦 ZAR only</span></div>
+  <div class="plan-grid">
+    <article class="plan" data-plan="Starter" data-amount="150" data-fee="5"><span class="plan-tag">STARTER</span><h2>R150</h2><p>Simple starting contribution.</p><ul><li>Digital contribution history</li><li>Receipt-ready records</li><li>Member dashboard</li></ul><button class="primary full choose">Continue →</button></article>
+    <article class="plan featured" data-plan="Growth" data-amount="500" data-fee="10"><span class="plan-tag">MOST POPULAR</span><h2>R500</h2><p>For members contributing more consistently.</p><ul><li>Everything in Starter</li><li>Enhanced reporting</li><li>Priority support workflow</li></ul><button class="primary full choose">Continue →</button></article>
+    <article class="plan" data-plan="Community" data-amount="1000" data-fee="15"><span class="plan-tag">COMMUNITY</span><h2>R1,000</h2><p>Higher contribution tier.</p><ul><li>Contribution history</li><li>Digital receipts</li><li>Admin reporting workflow</li></ul><button class="primary full choose">Continue →</button></article>
+  </div>
+  <div class="checkout-card" id="checkoutCard">
+    <div class="checkout-head"><div><div class="eyebrow">SECURE CHECKOUT</div><h2>Review and pay</h2></div><span class="secure-chip">🔒 Encrypted checkout</span></div>
+    <div class="checkout-grid">
+      <div class="breakdown"><h3>Payment breakdown</h3><div class="row"><span>Selected plan</span><b id="cPlan">Starter</b></div><div class="row"><span>Contribution</span><b id="cAmount">R150</b></div><div class="row"><span>Service fee</span><b id="cFee">R5</b></div><div class="total"><span>Total to pay</span><b id="cTotal">R155 ZAR</b></div><div class="row"><span>Payment method</span><b id="cMethod">Card</b></div><div class="pay-methods payment-options">
+  <button type="button" class="pay-option selected" data-method="Payfast/Card">💳 Card</button>
+  <button type="button" class="pay-option" data-method="Instant EFT">🏦 Instant EFT</button>
+  <button type="button" class="pay-option" data-method="1Voucher">🎟️ 1Voucher</button>
+  <button type="button" class="pay-option" data-method="OTT">📱 OTT</button>
+  <button type="button" class="pay-option" data-method="Wallet/Other">＋ More</button>
+</div>
+<small class="method-note" id="methodNote">Card checkout is routed through the payment gateway configured by the owner.</small><div class="method-status" id="methodStatus">Selected: Card</div>
+<div class="voucher-panel hidden" id="voucherPanel">
+  <label id="voucherLabel">Voucher PIN<input id="voucherPin" inputmode="numeric" autocomplete="off" placeholder="Enter voucher PIN"></label>
+  <small id="voucherHelp">Your voucher PIN is sent only to the authorised payment provider for validation. It is never stored in the browser or emailed to staff.</small>
+  <div class="voucher-links"><a id="voucherBuyLink" href="https://www.1voucher.co.za/" target="_blank" rel="noopener">Buy 1Voucher</a><a id="ottBuyLink" class="hidden" href="https://ottvoucher.com/" target="_blank" rel="noopener">Buy OTT Voucher</a></div>
+</div></div>
+      <form id="checkoutForm">
+        <label>Full name<input required id="name" placeholder="Your full name"></label>
+        <label>Phone<input required id="phone" placeholder="+27 82 XXX XXXX"></label>
+        <label>Email<input required id="email" type="email" placeholder="you@email.com"></label>
+        <label class="check"><input id="checkoutTerms" required type="checkbox"> I have reviewed the amount, fees and applicable terms.</label>
+        <button class="pay" type="submit">🔒 Continue to secure payment — <span id="payAmount">R155 ZAR</span></button>
+        <small class="fine">Payment gateway integration point. Replace this integration point with your authorised gateway/server endpoint. Never collect or store raw card details in this front end.</small>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+<section class="view" id="moneylist">
+  <div class="page-head"><div><div class="eyebrow">DAILY SHARE OPTIONS</div><h1>Money list.</h1><p>Choose a contribution level and review the example daily-share amount before checkout.</p></div><span class="zar">🇿🇦 ZAR only</span></div>
+  <div class="money-disclaimer"><b>Illustrative schedule:</b> The daily amounts below are examples for the website concept and are <strong>not guaranteed investment returns</strong>. Replace them with the legally approved terms of your real product before launch.</div>
+  <div class="money-grid" id="moneyGrid"></div>
+  <div class="money-note"><b>How it works</b><span>Select an option → review the contribution and fee → complete your verified payment through the authorised payment provider.</span></div>
+</section>
+
+<section class="view" id="transactions">
+  <div class="page-head"><div><div class="eyebrow">ACCOUNT HISTORY</div><h1>Transactions.</h1><p>Track contributions and payment statuses.</p></div><button class="secondary-btn" id="exportCsv">Export CSV</button></div>
+  <div class="panel table-panel"><div class="filters"><input id="searchTx" placeholder="Search transaction..."><select id="statusFilter"><option>All statuses</option><option>Completed</option><option>Pending</option></select></div><div class="table-scroll"><table><thead><tr><th>Date</th><th>Reference</th><th>Plan</th><th>Amount</th><th>Status</th></tr></thead><tbody id="txBody"></tbody></table></div></div>
+</section>
+
+<section class="view" id="referrals">
+  <div class="page-head"><div><div class="eyebrow">GROW THE COMMUNITY</div><h1>Referral centre.</h1><p>Invite people using your unique link.</p></div></div>
+  <div class="ref-grid"><div class="ref-card"><span>YOUR REFERRAL CODE</span><strong id="refCode">CAPITAL-KR72</strong><button class="secondary-btn" id="copyRef">Copy link</button></div><div class="metric"><span>Successful referrals</span><strong id="refCount">0</strong><small>Recorded referrals</small></div><div class="metric"><span>Reward balance</span><strong id="refBig">R0</strong><small>Configure your actual reward rules</small></div></div>
+  <div class="panel referral-rules"><h2>Referral programme</h2><p>Keep your actual reward amount, eligibility, expiry and payment rules here. Rewards are recorded only when the actual programme conditions are met; they are not guaranteed.</p><div class="rule"><b>01</b><span>Share your referral link</span></div><div class="rule"><b>02</b><span>Invitee completes the required onboarding</span></div><div class="rule"><b>03</b><span>Reward is recorded only when your real programme conditions are met</span></div></div>
+</section>
+
+<section class="view" id="profile">
+  <div class="page-head"><div><div class="eyebrow">ACCOUNT</div><h1>Profile & KYC.</h1><p>Manage your personal details, profile picture and identity verification.</p></div><span class="kyc-status" id="kycStatus">● Verification required</span></div>
+  <div class="profile-grid">
+    <div class="panel profile-card">
+      <div class="avatar big" id="profileAvatar">KR</div>
+      <h2 id="profileDisplayName">Member Account</h2><p>South Africa · ZAR</p>
+      <label class="upload-photo">Change profile picture
+        <input id="profilePhoto" type="file" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <button class="secondary-btn" id="editProfileBtn">Edit profile</button>
+      <div id="profileEdit" class="profile-edit hidden">
+        <label>Full name<input id="profileName" placeholder="Full name"></label>
+        <label>Phone<input id="profilePhone" placeholder="+27 82 XXX XXXX"></label>
+        <label>Email<input id="profileEmail" type="email" placeholder="you@email.com"></label>
+        <label>Address<input id="profileAddress" placeholder="Residential address"></label>
+        <button class="primary" id="saveProfile">Save changes</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Identity verification</h2><span class="kyc-status" id="kycInlineStatus">Not verified</span></div>
+      <p class="kyc-intro">Verification must be completed and approved before deposits/contributions are enabled.</p>
+      <div class="check-row" id="contactCheck"><span>✓</span><div><b>Contact details</b><small>Complete your member profile.</small></div></div>
+      <div class="check-row pending" id="identityCheck"><span>!</span><div><b>Identity document</b><small>Upload a clear identity document for review.</small></div></div>
+      <div class="kyc-upload">
+        <label>Identity document
+          <input id="kycDocument" type="file" accept="image/jpeg,image/png,application/pdf">
+        </label>
+        <small>Accepted: JPG, PNG or PDF. The production version should store documents in a private server-side storage bucket.</small>
+      </div>
+      <button class="primary" id="submitKyc" type="button">Submit verification for review</button>
+      <div class="notice" id="kycNotice">Your account remains unable to deposit until verification is approved.</div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="about">
+  <div class="page-head"><div><div class="eyebrow">ABOUT</div><h1>About Capital Crew.</h1><p>Learn more about the platform and contact the Capital Crew host team.</p></div></div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head"><h2>Capital Crew</h2><span class="pill">Community Investing</span></div>
+      <p>Capital Crew provides a member portal for contributions, account management, verification and payment workflows. Review the final legally approved product terms before using the live service.</p>
+      <div class="notice"><b>Support:</b> For account, verification or payment questions, contact the host team using the details on this page.</div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Host contact</h2><span class="pill">Direct contact</span></div>
+      <div class="contact-list">
+        <div class="contact-item"><div><b>Maya</b><small>WhatsApp support</small></div><a class="secondary-btn" href="https://wa.me/27717773789?text=Hello%20Capital%20Crew%2C%20I%20am%20from%20the%20Capital%20Crew%20website%20and%20I%20need%20help.%20Please%20assist%20me." target="_blank" rel="noopener">WhatsApp Maya</a></div>
+        <div class="contact-item"><div><b>Kuda</b><small>WhatsApp support</small></div><a class="secondary-btn" href="https://wa.me/27695902577?text=Hello%20Capital%20Crew%2C%20I%20am%20from%20the%20Capital%20Crew%20website%20and%20I%20need%20help.%20Please%20assist%20me." target="_blank" rel="noopener">WhatsApp Kuda</a></div>
+        <div class="contact-item"><div><b>Email</b><small>General support</small></div><a class="secondary-btn" href="mailto:workbadbms@outlook.com">Email host</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="help">
+  <div class="page-head"><div><div class="eyebrow">SUPPORT</div><h1>Help centre.</h1><p>Answers for members and a clear escalation path.</p></div></div>
+  <div class="faq-grid">
+    <details open><summary>How do I create a Capital Crew account?</summary><p>Enter your full name, email address and password, then submit the registration form. A one-time confirmation code must be sent to the email address you entered. Your account is only activated after the correct code is confirmed. If the code expires, request a new one.</p></details>
+    <details><summary>Why do I need a confirmation code?</summary><p>The confirmation code helps confirm that you control the email address used for your account. Capital Crew should require this confirmation when a new account is created and again whenever a member signs in. Never share a confirmation code with another person.</p></details>
+    <details><summary>What should I do if I do not receive my code?</summary><p>Check your spam or junk folder and make sure the email address is correct. You can request a new code. If you still need help, use the WhatsApp support buttons in About & Contact and tell the host team that you are contacting them from the Capital Crew website.</p></details>
+    <details><summary>How do I make a contribution?</summary><p>First complete identity verification. Once your account is approved, choose a plan, review the contribution and fee, select an authorised payment method and continue to the configured payment provider. A payment is only credited after the provider confirms it to the server.</p></details>
+    <details><summary>How does account verification work?</summary><p>Open Profile & KYC, complete your profile and submit the requested identity document. Your status can be pending, verified or rejected. Deposits remain disabled until verification is approved.</p></details>
+    <details><summary>Where can I see my receipt?</summary><p>Your live system should generate a server-side payment confirmation and receipt after the payment provider confirms success.</p></details>
+    <details><summary>What if I forget my password?</summary><p>Use the production password-reset flow configured by the site owner. A secure reset link or one-time code should be sent to the verified email address. Never ask support to send or disclose your password.</p></details>
+    <details><summary>When can I withdraw?</summary><p>Withdrawals become eligible after 10 full days of investment, counted from the date your investment is confirmed. After an eligible withdrawal is approved, it normally takes 1–3 working days to reflect, depending on the payment method and provider. Identity checks, compliance reviews, payment reversals or provider delays may affect timing.</p></details>
+    <details><summary>How do I contact support?</summary><p>Open About & Contact and use WhatsApp Maya or WhatsApp Kuda. The message opens with a note that you are contacting the team from the Capital Crew website and need help.</p></details>
+  </div>
+</section>
+
+
+<section class="view" id="terms">
+  <div class="page-head"><div><div class="eyebrow">LEGAL</div><h1>Terms & Conditions.</h1><p>Members must review and accept the terms before accessing the Capital Crew platform.</p></div><span class="kyc-status">Version 1.0 · Draft for legal review</span></div>
+  <div class="legal-page">
+    <div class="legal-alert"><b>Important:</b> This template is not legal advice. Have a South African lawyer review and replace it with the final terms for your actual business, investment structure, payment arrangements and regulatory status before launch.</div>
+    <h2>1. Access and eligibility</h2><p>You must provide accurate information, keep your login credentials confidential and meet all eligibility, identity-verification and age requirements that apply to the Capital Crew product. Capital Crew may suspend access where required by law, fraud controls or its final product rules.</p>
+    <h2>2. Account information</h2><p>Members can update permitted profile information. Changes to identity or regulated information may require verification. You are responsible for keeping your information accurate and current.</p>
+    <h2>3. Identity verification</h2><p>Capital Crew may require identity and other compliance information before allowing deposits or contributions. Verification status may be pending, approved or rejected. Uploads must be accurate and belong to the account holder. Capital Crew may request additional information where required by its compliance process or applicable law.</p>\n    <h2>4. Contributions and payments</h2><p>Members select an available contribution level and are shown the contribution, applicable fee and total before payment. Payments are processed through an authorised payment provider. A payment is not treated as successfully settled until the provider confirms it to the Capital Crew server.</p>
+    <h2>4. Daily-share / return information</h2><p>Any daily amounts shown on the Money List must reflect the actual approved product terms. They must not be described as guaranteed returns unless the underlying product is legally structured to provide such a guarantee. All risk, performance, liquidity and withdrawal conditions must be disclosed before a member commits funds.</p>
+    <h2>5. Wallet and account balance</h2><p>Member balances shown in the dashboard are calculated from server-side ledger entries created from verified events such as confirmed payments, approved allocations and authorised withdrawals. The browser cannot create or increase a balance by itself. Amounts shown as available for withdrawal remain subject to the 10-day investment period and the final product rules.</p>
+    <h2>6. Withdrawals</h2><p>Unless the final approved product terms state otherwise, a member may request a withdrawal only after <strong>10 full days of investment</strong>, measured from the date the investment is confirmed by Capital Crew. Once an eligible withdrawal has been approved and released for settlement, Capital Crew targets <strong>1–3 working days</strong> for the funds to reflect, depending on the selected payment method and the relevant payment provider or financial institution. The actual timing may be longer where identity verification, compliance checks, weekends/public holidays, payment reversals, bank processing or provider outages apply. All withdrawal requests, approvals, rejections, fees and settlement events must be recorded server-side.</p>
+    <h2>7. Refunds and payment disputes</h2><p>Payment disputes, reversals, chargebacks and refunds are handled according to the payment provider's rules and Capital Crew's final refund policy. The transaction ledger should record every state change.</p>
+    <h2>8. Privacy and security</h2><p>Personal information must be processed according to the applicable privacy laws and the final Capital Crew privacy notice. Never store card numbers, CVVs, banking passwords or payment-provider secrets in the website code.</p>
+    <h2>9. Prohibited use</h2><p>Members may not use the service for fraud, money laundering, unauthorised payments, impersonation, account sharing or other unlawful activity.</p>
+    <h2>10. Changes</h2><p>Capital Crew may update platform policies and terms subject to the notice and consent requirements that apply to the final service.</p>
+    <div class="legal-accept"><label class="check"><input id="termsAccept" type="checkbox"> I confirm I have read and accept the Capital Crew Terms & Conditions and Privacy Notice.</label><button class="primary" id="acceptTerms">Accept terms</button></div>
+  </div>
+</section>
+
+<section class="view admin" id="admin">
+  <div class="page-head"><div><div class="eyebrow">ADMIN CONSOLE</div><h1>Operations dashboard.</h1><p>Operational controls for authorised administrators.</p></div><span class="admin-pill">ADMIN</span></div>
+  <div class="hero-metrics"><div class="metric"><span>Members</span><strong>1,284</strong><small>Current system figure</small></div><div class="metric"><span>Contributions this month</span><strong>R428,500</strong><small>Current system figure</small></div><div class="metric"><span>Pending KYC</span><strong>37</strong><small>Current system figure</small></div><div class="metric"><span>Payment success</span><strong>97.8%</strong><small>Current system figure</small></div></div>
+  <div class="grid-2"><div class="panel"><h2>Admin quick actions</h2><div class="admin-actions"><button>Review KYC queue</button><button>Export transactions</button><button data-view="moneylist">Manage money list</button><button>Review support tickets</button></div></div><div class="panel"><h2>Risk & compliance</h2><p>Before launch, connect your actual identity verification, transaction monitoring, accounting, reconciliation and audit-log systems. Restrict admin access with role-based permissions and MFA.</p></div></div>
+</section>
+
+<footer><span>© 2026 Capital Crew</span><span>Community Investing · ZAR</span><span>Terms · Privacy · Risk disclosure</span></footer>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase/public-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase/public-config.js"></script>
+<script src="app.js"></script>
+</body></html>

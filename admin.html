@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Capital Crew — Admin Workspace</title>
+<meta name="description" content="Capital Crew staff and administration workspace.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase/public-config.js"></script>
+</head>
+<body>
+<div id="auth" class="auth">
+  <div class="auth-card">
+    <div class="brand"><img src="assets/capital-crew-logo.jpg"><div><b>Capital Crew</b><small>Admin Workspace</small></div></div>
+    <div class="eyebrow">STAFF ACCESS</div>
+    <h1>Operations control.</h1>
+    <p>Sign in with an authorised staff account. Admin access is checked against the Supabase staff role table.</p>
+    <form id="loginForm">
+      <label>Email<input id="email" type="email" required placeholder="admin@yourdomain.com" autocomplete="username"></label>
+      <label>Password<input id="password" type="password" required placeholder="Your password" autocomplete="current-password"></label>
+      <button class="primary" type="submit">Sign in to admin →</button>
+    </form>
+    <div id="authMessage" class="message"></div>
+    <a class="back" href="index.html">← Back to member portal</a>
+  </div>
+</div>
+
+<div id="app" class="shell hidden">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#overview"><img src="assets/capital-crew-logo.jpg"><div><b>Capital Crew</b><small>Admin Workspace</small></div></a>
+    <div class="side-label">OPERATIONS</div>
+    <button class="nav active" data-section="overview">⌂ <span>Overview</span></button>
+    <button class="nav" data-section="members">♙ <span>Members</span></button>
+    <button class="nav" data-section="kyc">✓ <span>KYC queue</span><span class="count" id="kycCount">0</span></button>
+    <button class="nav" data-section="payments">↕ <span>Payments</span></button>
+    <button class="nav" data-section="withdrawals">⇲ <span>Withdrawals</span><span class="count" id="withdrawCount">0</span></button>
+    <button class="nav" data-section="audit">◷ <span>Audit log</span></button>
+    <div class="side-label">SYSTEM</div>
+    <button class="nav" data-section="settings">⚙ <span>Admin setup</span></button>
+    <div class="side-bottom">
+      <div class="staff"><span id="staffAvatar">A</span><div><b id="staffEmail">Staff</b><small id="staffRole">Authorised</small></div></div>
+      <button id="logout" class="logout">Sign out</button>
+      <a href="index.html" class="member-link">Open member portal →</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="hamb" class="hamb">☰</button>
+      <div><span class="crumb">Admin / </span><b id="sectionTitle">Overview</b></div>
+      <div class="top-right"><span class="secure">● Staff access</span><button id="refresh" class="icon">↻</button></div>
+    </header>
+
+    <section id="overview" class="section active">
+      <div class="head"><div><div class="eyebrow">ADMIN DASHBOARD</div><h1>Good morning, <span id="staffName">Admin.</span></h1><p>Monitor members, verification, payments and withdrawals from one workspace.</p></div><span class="role-badge" id="roleBadge">ADMIN</span></div>
+      <div class="metrics">
+        <div class="metric"><span>Total members</span><strong id="mMembers">—</strong><small>Registered profiles</small></div>
+        <div class="metric"><span>Available balances</span><strong id="mBalance">—</strong><small>Member wallet total</small></div>
+        <div class="metric"><span>Pending KYC</span><strong id="mKyc">—</strong><small>Awaiting review</small></div>
+        <div class="metric"><span>Pending withdrawals</span><strong id="mWithdraw">—</strong><small>Awaiting staff action</small></div>
+      </div>
+      <div class="grid">
+        <div class="panel"><div class="panel-head"><h2>Needs attention</h2><button class="text" data-go="kyc">View queue →</button></div><div id="attention"></div></div>
+        <div class="panel"><div class="panel-head"><h2>Financial controls</h2><span class="chip">Protected</span></div><p class="muted">The admin browser can review and approve operational records, but it cannot invent wallet balances or mark a provider payment as completed. Confirmed money movements must come from trusted server-side payment/webhook workflows.</p><div class="warning">Never put a Supabase service-role key, payment secret or voucher PIN in this page.</div></div>
+      </div>
+    </section>
+
+    <section id="members" class="section">
+      <div class="head"><div><div class="eyebrow">MEMBER MANAGEMENT</div><h1>Members.</h1><p>Search member profiles and monitor verification status.</p></div></div>
+      <div class="panel table-panel"><div class="filters"><input id="memberSearch" placeholder="Search name, email or phone…"><select id="memberKyc"><option value="">All KYC</option><option>verified</option><option>pending</option><option>unverified</option><option>rejected</option></select></div><div class="scroll"><table><thead><tr><th>Member</th><th>Email</th><th>KYC</th><th>Created</th><th>Action</th></tr></thead><tbody id="membersBody"></tbody></table></div></div>
+    </section>
+
+    <section id="kyc" class="section">
+      <div class="head"><div><div class="eyebrow">COMPLIANCE</div><h1>KYC queue.</h1><p>Review identity submissions. Every decision is written to the audit log.</p></div></div>
+      <div id="kycList" class="cards"></div>
+    </section>
+
+    <section id="payments" class="section">
+      <div class="head"><div><div class="eyebrow">PAYMENT MONITORING</div><h1>Payments.</h1><p>Read provider confirmations, references and statuses. Payment completion remains server-controlled.</p></div></div>
+      <div class="panel table-panel"><div class="filters"><input id="paymentSearch" placeholder="Search payment ID, member or reference…"><select id="paymentStatus"><option value="">All statuses</option><option>pending</option><option>completed</option><option>failed</option><option>refunded</option></select></div><div class="scroll"><table><thead><tr><th>Created</th><th>Member</th><th>Provider</th><th>Method</th><th>Amount</th><th>Status</th><th>Reference</th></tr></thead><tbody id="paymentsBody"></tbody></table></div></div>
+    </section>
+
+    <section id="withdrawals" class="section">
+      <div class="head"><div><div class="eyebrow">PAYOUT CONTROL</div><h1>Withdrawals.</h1><p>Approve eligible requests for settlement; payment execution belongs to the authorised provider/server workflow.</p></div></div>
+      <div id="withdrawalsList" class="cards"></div>
+    </section>
+
+    <section id="audit" class="section">
+      <div class="head"><div><div class="eyebrow">ACCOUNTABILITY</div><h1>Audit log.</h1><p>Review staff actions and system events.</p></div></div>
+      <div class="panel table-panel"><div class="scroll"><table><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Entity</th><th>Details</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
+    </section>
+
+    <section id="settings" class="section">
+      <div class="head"><div><div class="eyebrow">ADMIN SETUP</div><h1>Connection & roles.</h1><p>Use this checklist when moving from the static package to the connected Supabase deployment.</p></div></div>
+      <div class="grid">
+        <div class="panel"><h2>Current connection</h2><div id="connection"></div></div>
+        <div class="panel"><h2>Create an admin safely</h2><ol class="steps"><li>Create the staff user's account in Supabase Auth.</li><li>Run <code>insert into public.staff_roles(user_id, role) values ('AUTH-USER-UUID','admin');</code> in the Supabase SQL editor.</li><li>Sign in here using that Auth account.</li><li>Use MFA and least-privilege roles for finance/compliance/support staff.</li></ol></div>
+      </div>
+      <div class="panel"><h2>What is connected</h2><div class="connection-grid"><div><b>Members</b><span>profiles + wallets</span></div><div><b>Payments</b><span>payments + ledger</span></div><div><b>KYC</b><span>kyc_documents + profiles</span></div><div><b>Payouts</b><span>withdrawals</span></div><div><b>Audit</b><span>audit_log</span></div><div><b>Auth</b><span>Supabase Auth + staff_roles</span></div></div></div>
+    </section>
+
+    <footer>© 2026 Capital Crew · Restricted staff workspace · <a href="index.html">Member portal</a></footer>
+  </main>
+</div>
+<div id="toast" class="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase/public-config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
